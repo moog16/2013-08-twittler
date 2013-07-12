@@ -49,8 +49,9 @@
         update();
       });
 
-      function getTime() {
-        var time = new Date();
+      var refreshFeed = setInterval(update, 3000);
+
+      function getTime(time) {
         var hours = time.getHours(),
         minutes = time.getMinutes(),
         seconds = time.getSeconds(),
@@ -58,6 +59,7 @@
         day = time.getDate(),
         year = time.getFullYear();
         var meridiem;
+        var day;
 
         if(minutes < 10) {
           minutes = "0" + minutes;
@@ -71,47 +73,78 @@
         if(seconds < 10) {
           seconds = "0" +seconds;
         };
+        hours = hours%12;
 
         var monthDate = month + "/" + day + "/" + year;
         var timeDate = hours + ":" + minutes + ":" + seconds + " " + meridiem;
 
-        return  timeDate + " " + monthDate;
+        return timeDate + " " + monthDate;
       };
 
-      function update(usernameShow) {
+      function getTweet(num, index, names) {
+        if(num == null) {
+          return streams.home[index];
+        }
+        else {
+          var names = getKeys(streams.users);
+          var username = names[num];
+          var findUser = streams.users[username][0].user;
+          var currentUser = streams.home[index].user;
+          if(findUser == streams.home[index].user){
+            return streams.home[index];
+          }
+          else {
+            index -= 1;
+            return getTweet(num,index,names);
+          };
+        };
+      };
+
+      function update(usernameNum) {
         var $body = $('body');
         $body.html('');
 
         var index = streams.home.length - 1;
         var names = getKeys(streams.users);
         var nameNum;
-        while(index >= 0){
-          var tweet = streams.home[index];
 
+        while(index >= 0){
+          /* if there is a usernameNum, then we want to pick out a specific 
+            user timeline. */
+
+          tweet = getTweet(usernameNum,index,names);
+          
+          //console.log(tweet);
           for(var i=0; i<names.length; i++) {
             if(names[i] == tweet.user) {
               nameNum = i;
             };
-          }; 
+          };
+          console.log(tweet);
+
+          // setup tweet
           var $tweet = $('<div class="tweet"></div>');
           var $tweetMessage = $('<span class="message"></span>');
-          var $tweetUser = $('<a class="tweetUser" onclick="update('+ nameNum + ')"></a>');
+          var $tweetUser = $('<a class="tweetUser" onclick="updateTimeLine('+ nameNum + ')"></a>');
           var $dateTime = $('<span class="time"></span>');
-          var timeText = getTime();
-          if(usernameShow == null) {
-            $tweetUser.text('@' + tweet.user);
-            $tweetMessage.text(tweet.message);
-            $dateTime.text(timeText);
-            $tweetUser.appendTo($tweet);
-            $tweetMessage.appendTo($tweet);
-            $dateTime.appendTo($tweet);
-          }
-          else {
+          var timeText = getTime(tweet.created_at);
 
-          };
+          // create tweet message & layout
+          $tweetUser.text('@' + tweet.user);
+          $tweetMessage.text(tweet.message);
+          $dateTime.text(timeText);
+          $tweetUser.appendTo($tweet);
+          $tweetMessage.appendTo($tweet);
+          $dateTime.appendTo($tweet);
+
           $tweet.appendTo($body);
           index -= 1;
         };
+      };
+
+      function updateTimeLine(userNum) {
+        clearInterval(refreshFeed);
+        refreshFeed = setInterval(update(userNum), 3000);
       };
 
       function getKeys(collect) {
@@ -121,16 +154,6 @@
         };
         return keys;
       };
-
-      function showUser(userNum) {
-        var names = getKeys(streams.users);
-        var username = names[userNum];
-        var user = streams.users[username];
-        for(var i=0; i<user.length; i++) {
-
-        };
-      };
-      setInterval(update, 3000);
 
     </script>
   </body>
