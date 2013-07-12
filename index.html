@@ -5,19 +5,37 @@
     <script src="data_generator.js"></script>
     <style>
     body {
-      background-color: #66ffb6;
+      /*background-color: #66b6ff;*/
+      background-image: url('./cream_pixels.png');
     }
     div.tweet {
-      height: 50px;
+      height: 75px;
       width: 400px;
-      background-color: #3dc0cc;
-      border: 1px solid #7b9799;
+      background-color: #ceebff;
+      border: 1px solid #666699;
+      border-bottom: 0px;
       margin-left: 30%;
+      position: relative;
+      font-family: Arial, Helvetica, sans-serif;
+      font: 13px;
     }
     span.time {
-      color: #cc3d90;
+      color: #3e3dcc;
       float: right;
-      border: solid 1px black;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      font-size: 13px;
+      height: 13px;
+      width: 135px;
+    }
+    span.tweetUser {
+      color: #cc6e3d;
+      font-size: 20px;
+    }
+    span.message {
+      display: block;
+      margin-left: 10px;
     }
     </style>
   </head>
@@ -41,12 +59,14 @@
         if(minutes < 10) {
           minutes = "0" + minutes;
         };
-
         if(hours > 11) {
           meridiem = "PM"; 
         }
         else {
           meridiem = "AM";
+        };
+        if(seconds < 10) {
+          seconds = "0" +seconds;
         };
 
         var monthDate = month + "/" + day + "/" + year;
@@ -64,11 +84,16 @@
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div class="tweet"></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-
+          var $tweetMessage = $('<span class="message"></span>');
+          var $tweetUser = $('<span class="tweetUser"></span>');
           var $dateTime = $('<span class="time"></span>');
           var timeText = getTime();
+
+          $tweetUser.text('@' + tweet.user);
+          $tweetMessage.text(tweet.message);
           $dateTime.text(timeText);
+          $tweetUser.appendTo($tweet);
+          $tweetMessage.appendTo($tweet);
           $dateTime.appendTo($tweet);
 
           $tweet.appendTo($body);
