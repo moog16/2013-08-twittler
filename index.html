@@ -7,20 +7,55 @@
   <body>
     <script>
 
-      $(document).ready(function(){
+      $(document).ready( function() {
+        update();
+      });
+
+      function getTime() {
+        var time = new Date();
+        var hours = time.getHours(),
+        minutes = time.getMinutes(),
+        seconds = time.getSeconds(),
+        month = time.getMonth() + 1,
+        day = time.getDate(),
+        year = time.getFullYear();
+        var meridiem;
+
+        if(minutes < 10) {
+          minutes = "0" + minutes;
+        };
+
+        if(hours > 11) {
+          meridiem = "PM"; 
+        }
+        else {
+          meridiem = "AM";
+        };
+
+        var monthDate = month + "/" + day + "/" + year;
+        var timeDate = hours + ":" + minutes + ":" + seconds + " " + meridiem;
+
+        return  timeDate + " " + monthDate;
+      };
+
+      function update() {
         var $body = $('body');
         $body.html('');
 
         var index = streams.home.length - 1;
+        console.log(index);
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          $tweet.text('@' + tweet.user + ': ' + tweet.message + " " + getTime() );
           $tweet.appendTo($body);
           index -= 1;
-        }
+        };
+      };
 
-      });
+      setInterval(update, 3000);
+
+
 
     </script>
   </body>
