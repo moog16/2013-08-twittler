@@ -29,9 +29,12 @@
       height: 13px;
       width: 135px;
     }
-    span.tweetUser {
+    a.tweetUser {
       color: #cc6e3d;
       font-size: 20px;
+    }
+    a:hover {
+      cursor: pointer;
     }
     span.message {
       display: block;
@@ -75,35 +78,59 @@
         return  timeDate + " " + monthDate;
       };
 
-      function update() {
+      function update(usernameShow) {
         var $body = $('body');
         $body.html('');
 
         var index = streams.home.length - 1;
-        console.log(index);
+        var names = getKeys(streams.users);
+        var nameNum;
         while(index >= 0){
           var tweet = streams.home[index];
+
+          for(var i=0; i<names.length; i++) {
+            if(names[i] == tweet.user) {
+              nameNum = i;
+            };
+          }; 
           var $tweet = $('<div class="tweet"></div>');
           var $tweetMessage = $('<span class="message"></span>');
-          var $tweetUser = $('<span class="tweetUser"></span>');
+          var $tweetUser = $('<a class="tweetUser" onclick="update('+ nameNum + ')"></a>');
           var $dateTime = $('<span class="time"></span>');
           var timeText = getTime();
+          if(usernameShow == null) {
+            $tweetUser.text('@' + tweet.user);
+            $tweetMessage.text(tweet.message);
+            $dateTime.text(timeText);
+            $tweetUser.appendTo($tweet);
+            $tweetMessage.appendTo($tweet);
+            $dateTime.appendTo($tweet);
+          }
+          else {
 
-          $tweetUser.text('@' + tweet.user);
-          $tweetMessage.text(tweet.message);
-          $dateTime.text(timeText);
-          $tweetUser.appendTo($tweet);
-          $tweetMessage.appendTo($tweet);
-          $dateTime.appendTo($tweet);
-
+          };
           $tweet.appendTo($body);
           index -= 1;
         };
       };
 
+      function getKeys(collect) {
+        var keys = [];
+        for( var key in collect ) {
+          keys.push(key);
+        };
+        return keys;
+      };
+
+      function showUser(userNum) {
+        var names = getKeys(streams.users);
+        var username = names[userNum];
+        var user = streams.users[username];
+        for(var i=0; i<user.length; i++) {
+
+        };
+      };
       setInterval(update, 3000);
-
-
 
     </script>
   </body>
