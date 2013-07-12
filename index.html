@@ -48,7 +48,8 @@
       $(document).ready( function() {
         update();
       });
-
+      
+      var index;
       var refreshFeed = setInterval(update, 3000);
 
       function getTime(time) {
@@ -95,6 +96,7 @@
           }
           else {
             index -= 1;
+            console.log(index);
             return getTweet(num,index,names);
           };
         };
@@ -104,7 +106,7 @@
         var $body = $('body');
         $body.html('');
 
-        var index = streams.home.length - 1;
+        index = streams.home.length - 1;
         var names = getKeys(streams.users);
         var nameNum;
 
