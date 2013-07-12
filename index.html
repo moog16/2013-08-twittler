@@ -3,6 +3,23 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <style>
+    body {
+      background-color: #66ffb6;
+    }
+    div.tweet {
+      height: 50px;
+      width: 400px;
+      background-color: #3dc0cc;
+      border: 1px solid #7b9799;
+      margin-left: 30%;
+    }
+    span.time {
+      color: #cc3d90;
+      float: right;
+      border: solid 1px black;
+    }
+    </style>
   </head>
   <body>
     <script>
@@ -46,8 +63,14 @@
         console.log(index);
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message + " " + getTime() );
+          var $tweet = $('<div class="tweet"></div>');
+          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+
+          var $dateTime = $('<span class="time"></span>');
+          var timeText = getTime();
+          $dateTime.text(timeText);
+          $dateTime.appendTo($tweet);
+
           $tweet.appendTo($body);
           index -= 1;
         };
