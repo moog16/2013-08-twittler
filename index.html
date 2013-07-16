@@ -12,6 +12,30 @@
       /*background-color: #66b6ff;*/
       background-image: url('./cream_pixels.png');
     }
+    #menu {
+      height: 50px;
+      width: 390px;
+      background-color: #3e4499;
+      margin-left: 30%;
+      padding-left: 10px;
+      border: 1px solid black;
+      border-bottom: 0px;
+      font-size: 36px;
+      color: #ceebff;
+    }
+    #backBut {
+      float: right;
+      font-size: 20px;
+      margin-top: 30px;
+    }
+    #messageInsert {
+      margin-top: 5px;
+      margin-left: 30%;
+      width: 396px;
+    }
+    #mainFeed {
+      
+    }
     div.tweet {
       height: 75px;
       width: 400px;
@@ -39,6 +63,7 @@
     }
     a:hover {
       cursor: pointer;
+      color: #ff530d;
     }
     span.message {
       display: block;
@@ -55,28 +80,6 @@
 
       var refreshFeed = setInterval(update, 3000);
 
-      /*function getTime(time) {
-        var hours = time.getHours(),
-        minutes = time.getMinutes(),
-        seconds = time.getSeconds(),
-        month = time.getMonth() +0,
-        day = time.getDate(),
-        year = time.getFullYear();
-        var meridiem;
-        var day;
-
-        if(minutes < 10) { minutes = "0" + minutes; }
-        if(hours > 11) { meridiem = "PM";
-        } else { meridiem = "AM"; }
-        if(seconds < 10) { seconds = "0" +seconds; }
-        hours = hours%12;
-
-        var monthDate = month + "/" + day + "/" + year;
-        var timeDate = hours + ":" + minutes + ":" + seconds + " " + meridiem;
-
-        return timeDate + " " + monthDate;
-      };*/
-
       function relTime(time) {
         var month = time.getMonth(),
         day = time.getDate(),
@@ -90,24 +93,29 @@
         var username = names[numName];
         var currentUser = streams.home[index].user;
 
-        $('body').html('');
+        $('body').html('<div id="menu">Twittler<a id="backBut" onclick="backMain()">Main Feed</a></div><textbox id="messageInsert" />');
         clearInterval(refreshFeed);
         
-        for(var i=0; i<index; i++) {
+        for(var i=index; i>=0; i--) {
           if(streams.home[i].user === username) {
             writeTweet(streams.home[i], numName, index);
           }
         }
       };
 
+      function backMain() {
+        update()
+        refreshFeed = setInterval(update,3000);
+      };
+
+/***** question: why can't I add the text within the html tags? ****/
+
       function writeTweet(tweet, nameNum, index) {
-        var $body = $('body');
         // setup tweet
         var $tweet = $('<div class="tweet"></div>');
         var $tweetMessage = $('<span class="message"></span>');
         var $tweetUser = $('<a class="tweetUser" onclick="showTimeLine('+ nameNum + "," + index + ')"></a>');
         var $dateTime = $('<span class="time"></span>');
-        var timeText = getTime(tweet.created_at);
         var relativeTime = relTime(tweet.created_at);
 
         // create tweet message & layout
@@ -117,13 +125,12 @@
         $tweetUser.appendTo($tweet);
         $tweetMessage.appendTo($tweet);
         $dateTime.appendTo($tweet);
-        $tweet.appendTo($body);
+        $tweet.appendTo($('body'));
       };
 
       function update() {
-        var $body = $('body');
-        $body.html('');
 
+        $('body').html('<div id="menu">Twittler</div><textarea id="messageInsert"></textarea>');
         var index = streams.home.length - 1;
         var names = Object.keys(streams.users);
         var nameNum;
@@ -131,15 +138,13 @@
         while(index >= 0){
           tweet = streams.home[index];
           
-          //console.log(tweet);
-          for(var i=0; i<names.length; i++) {
-            if(names[i] === tweet.user) {
-              nameNum = i;
+          for(var name in names) {
+            if(names[name] === tweet.user) {
+              nameNum = name;
             }
           }
 
           writeTweet(tweet, nameNum, index);
-          
 
           index -= 1;
         }
