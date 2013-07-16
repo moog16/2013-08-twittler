@@ -33,9 +33,6 @@
       margin-left: 30%;
       width: 396px;
     }
-    #mainFeed {
-      
-    }
     div.tweet {
       height: 75px;
       width: 400px;
@@ -75,6 +72,9 @@
     <script>
 
       $(document).ready( function() {
+        streams.users.shawndrost = [];
+
+        $('body').html('<div id="menu">Twittler</div><textarea id="messageInsert"></textarea><a id="send" onclick="send()">send</a><div id="mainFeed"></div>');
         update();
       });
 
@@ -93,18 +93,24 @@
         var username = names[numName];
         var currentUser = streams.home[index].user;
 
-        $('body').html('<div id="menu">Twittler<a id="backBut" onclick="backMain()">Main Feed</a></div><textbox id="messageInsert" />');
+        $('body').html('<div id="menu">Twittler<a id="backBut" onclick="backMain()">Main Feed</a></div><textarea id="messageInsert"></textarea><a id="send" onclick="send()">send</a><div id="mainFeed"></div>');
         clearInterval(refreshFeed);
         
-        for(var i=index; i>=0; i--) {
+        for(var i=index; i>=0; i--) { 
           if(streams.home[i].user === username) {
             writeTweet(streams.home[i], numName, index);
           }
         }
       };
 
+      function send() {
+        console.log(document.getElementById('messageInsert').value);
+        $('#messageInsert').val('');
+      };
+
       function backMain() {
-        update()
+        $('body').html('<div id="menu">Twittler</div><textarea id="messageInsert"></textarea><a id="send" onclick="send()">send</a><div id="mainFeed"></div>');
+        update();
         refreshFeed = setInterval(update,3000);
       };
 
@@ -125,12 +131,11 @@
         $tweetUser.appendTo($tweet);
         $tweetMessage.appendTo($tweet);
         $dateTime.appendTo($tweet);
-        $tweet.appendTo($('body'));
+        $tweet.appendTo($('#mainFeed'));
       };
 
       function update() {
-
-        $('body').html('<div id="menu">Twittler</div><textarea id="messageInsert"></textarea>');
+        $('#mainFeed').html('');
         var index = streams.home.length - 1;
         var names = Object.keys(streams.users);
         var nameNum;
