@@ -71,8 +71,10 @@
   <body>
     <script>
 
+      var usernameNew;
       $(document).ready( function() {
-        streams.users.shawndrost = [];
+        usernameNew = prompt("Please enter username:");
+        streams.users[usernameNew] = [];
 
         $('body').html('<div id="menu">Twittler</div><textarea id="messageInsert"></textarea><a id="send" onclick="send()">send</a><div id="mainFeed"></div>');
         update();
@@ -104,7 +106,17 @@
       };
 
       function send() {
-        console.log(document.getElementById('messageInsert').value);
+        //set new tweet
+        var newTweet = {};
+        newTweet.user = usernameNew;
+        //newTweet[user] = usernameNew;
+        newTweet.message = document.getElementById('messageInsert').value;
+        newTweet.created_at = new Date();
+
+        var username = newTweet.user;
+        streams.users[username].push(newTweet);
+        streams.home.push(newTweet);
+        //delete text field
         $('#messageInsert').val('');
       };
 
